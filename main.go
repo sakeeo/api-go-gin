@@ -1,14 +1,30 @@
 package main
 
 import (
-	"fmt"
+	"api-go-gin/controllers"
+	"api-go-gin/models"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	s := "gopher"
-	fmt.Println("Hello and welcome, %s!", s)
+	router := gin.Default()
+	models.ConnectDatabase()
 
-	for i := 1; i <= 5; i++ {
-		fmt.Println("i =", 100/i)
+	//router
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "Halaman index",
+		})
+	})
+	router.GET("/api/posts", controllers.FindPosts)
+	router.POST("/api/posts", controllers.StorePost)
+	router.GET("/api/posts/:id", controllers.FindPostById)
+	router.PUT("/api/posts/:id", controllers.UpdatePost)
+	router.DELETE("/api/posts/:id", controllers.DeletePost)
+	//end of router
+
+	err := router.Run(":3000")
+	if err != nil {
+		return
 	}
 }
